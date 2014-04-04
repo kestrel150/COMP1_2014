@@ -78,6 +78,7 @@ def DisplayMenu():
 
 def GetMenuChoice():
   Choice = input()
+  Choice = Choice[0].lower()
   print()
   return Choice
 
