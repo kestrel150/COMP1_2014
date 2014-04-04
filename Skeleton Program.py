@@ -4,7 +4,7 @@
 # developed in the Python 3.2 programming environment
 # version 2 edited 06/03/2014
 
-#Test
+
 import random
 
 NO_OF_RECENT_SCORES = 3
