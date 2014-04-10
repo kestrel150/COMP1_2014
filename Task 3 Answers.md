@@ -26,3 +26,8 @@ FUNCTION GetPlayerName
 		IF ValidName = FALSE THEN
 			OUTPUT "Please enter a valid name (Only characters from the alphabet are allowed, and the name must be from 2 characters to 15 characters long)"
 	
+
+	
+##Deciding whether you want to add your name to the recent score table
+
+1. The function that updates the high scores is the UpdateRecentScores function. However it is PlayGame that runs this function.

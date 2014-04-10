@@ -217,7 +217,14 @@ def PlayGame(Deck, RecentScores):
       GameOver = True
   if GameOver:
     DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2)
-    UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2)
+    ValidHighScoreChoice = False
+    while ValidHighScoreChoice == False:
+      Addscore = input("Do you want to add your score to the high score table? (Y or N): ")
+      Addscore = Addscore[0].upper()
+      if Addscore == "Y" or Addscore == "N":
+        ValidHighScoreChoice = True
+    if Addscore == "Y":
+      UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2)
   else:
     DisplayEndOfGameMessage(51)
     UpdateRecentScores(RecentScores, 51)
