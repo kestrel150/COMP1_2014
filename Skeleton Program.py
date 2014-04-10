@@ -130,8 +130,16 @@ def IsNextCardHigher(LastCard, NextCard):
 
 def GetPlayerName():
   print()
-  PlayerName = input('Please enter your name: ')
-  print()
+  ValidName = False
+  while ValidName == False:
+    PlayerName = input('Please enter your name: ')
+    print()
+    ValidName = PlayerName.isalpha()
+    if len(PlayerName) not in range(2,16):
+      ValidName = False
+    if ValidName == False:
+      print("Please enter a valid name (Only characters from the alphabet are allowed, and the name must be from 2 characters to 15 characters long)")
+
   return PlayerName
 
 def GetChoiceFromUser():
