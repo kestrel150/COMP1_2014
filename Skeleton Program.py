@@ -9,6 +9,7 @@ import random
 import datetime
 
 NO_OF_RECENT_SCORES = 3
+ACE_HIGH = False
 
 class TCard():
   def __init__(self):
@@ -53,6 +54,8 @@ def GetRank(RankNo):
     Rank = 'Queen'
   elif RankNo == 13:
     Rank = 'King'
+  elif RankNo == 14:
+    Rank = "Ace"
   return Rank
 
 def GetSuit(SuitNo):
@@ -89,19 +92,31 @@ def DisplayOptions():
   print()
   print("OPTION MENU")
   print()
-  print("1. Set Ace to be (h)igh or (l)ow: ")
+  print("1. Set Ace to be High or Low: ")
   print()
   
 def GetOptionChoice():
+  OptionChoice = int(input("Select an option from the menu (or enter q to quit to the main menu): "))
+  return OptionChoice
+
+########################################################
+def SetOptions():
   DisplayOptions()
-  OptionChoice = int(input("Select an option from the menu (or enter q to quit): "))
+  OptionChoice = GetOptionChoice()
   if OptionChoice == 1:
-    SetOptions(OptionChoice)
+    SetAceHighOrLow()
   if OptionChoice == 'q':
     print("Returning to the menu...")
     print()
 
-##CREATE VARIABLES SETOPTIONS(OPTIONCHOICE) & SETACEHIGHORLOW()
+def SetAceHighOrLow():
+  global ACE_HIGH
+  AceOption = input("Do you want the ace to be (h)igh or (l)ow: ")
+  if AceOption == "h":
+    ACE_HIGH = True
+  elif AceOption == "l":
+    ACE_HIGH = False
+  
 
 def LoadDeck(Deck):
   CurrentFile = open('deck.txt', 'r')
@@ -114,6 +129,8 @@ def LoadDeck(Deck):
     Deck[Count].Suit = int(LineFromFile)
     LineFromFile = CurrentFile.readline()
     Deck[Count].Rank = int(LineFromFile)
+    if Deck[Count].Rank == 1 and ACE_HIGH == True:
+      Deck[Count].Rank = 4
     Count = Count + 1
  
 def ShuffleDeck(Deck):
@@ -189,6 +206,7 @@ def ResetRecentScores(RecentScores):
     RecentScores[Count].Date = ""
 
 def DisplayRecentScores(RecentScores):
+  BubbleSortScores(RecentScores)
   print()
   print('Recent Scores: ')
   print()
@@ -221,6 +239,8 @@ def UpdateRecentScores(RecentScores, Score):
   RecentScores[Count].Name = PlayerName
   RecentScores[Count].Score = Score
   RecentScores[Count].Date = CurrentTime
+
+
 
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
@@ -257,6 +277,18 @@ def PlayGame(Deck, RecentScores):
     DisplayEndOfGameMessage(51)
     UpdateRecentScores(RecentScores, 51)
 
+def BubbleSortScores(RecentScores):
+  sort = False
+  while not sort:
+    sort = True
+    for Count in range(1,NO_OF_RECENT_SCORES):
+      if RecentScores[Count].Score < RecentScores[Count + 1].Score:
+        sort = False
+        temp = RecentScores[Count + 1]
+        RecentScores[Count] = RecentScores[Count + 1]
+        RecentScores[Count + 1] = temp
+
+
 if __name__ == '__main__':
   for Count in range(1, 53):
     Deck.append(TCard())
@@ -278,4 +310,4 @@ if __name__ == '__main__':
     elif Choice == '4':
       ResetRecentScores(RecentScores)
     elif Choice == '5':
-      GetOptionChoice()
+      SetOptions()
