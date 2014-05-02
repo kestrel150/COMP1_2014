@@ -96,14 +96,15 @@ def DisplayOptions():
   print()
   
 def GetOptionChoice():
-  OptionChoice = int(input("Select an option from the menu (or enter q to quit to the main menu): "))
+  OptionChoice = input("Select an option from the menu (or enter q to quit to the main menu): ")
+  print()
   return OptionChoice
 
-########################################################
+
 def SetOptions():
   DisplayOptions()
   OptionChoice = GetOptionChoice()
-  if OptionChoice == 1:
+  if OptionChoice == '1':
     SetAceHighOrLow()
   if OptionChoice == 'q':
     print("Returning to the menu...")
@@ -285,8 +286,8 @@ def BubbleSortScores(RecentScores):
       if RecentScores[Count].Score < RecentScores[Count + 1].Score:
         sort = False
         temp = RecentScores[Count + 1]
-        RecentScores[Count] = RecentScores[Count + 1]
-        RecentScores[Count + 1] = temp
+        RecentScores[Count+1] = RecentScores[Count]
+        RecentScores[Count] = temp
 
 
 if __name__ == '__main__':
