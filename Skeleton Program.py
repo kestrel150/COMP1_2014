@@ -130,7 +130,7 @@ def LoadDeck(Deck):
     LineFromFile = CurrentFile.readline()
     Deck[Count].Rank = int(LineFromFile)
     if Deck[Count].Rank == 1 and ACE_HIGH == True:
-      Deck[Count].Rank = 4
+      Deck[Count].Rank = 14
     Count = Count + 1
  
 def ShuffleDeck(Deck):
