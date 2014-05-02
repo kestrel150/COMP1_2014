@@ -302,7 +302,17 @@ def BubbleSortScores(RecentScores):
         RecentScores[Count+1] = RecentScores[Count]
         RecentScores[Count] = temp
 
+def LoadScores():
+  RawScoresList = []
+  
+  with open("save_scores",mode="r",encoding="utf-8") as score_file:
+    for Count in score_file:
+      
+      RawScoresList.append(Count.rstrip("\n"))
+      print(RawScoresList)
 
+
+    
 if __name__ == '__main__':
   for Count in range(1, 53):
     Deck.append(TCard())
