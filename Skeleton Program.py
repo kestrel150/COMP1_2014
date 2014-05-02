@@ -78,7 +78,8 @@ def DisplayMenu():
   print('2. Play game (without shuffle)')
   print('3. Display recent scores')
   print('4. Reset recent scores')
-  print('5. Options')
+  print('5. Save scores')
+  print('6. Options')
   print()
   print('Select an option from the menu (or enter q to quit): ', end='')
 
@@ -241,6 +242,18 @@ def UpdateRecentScores(RecentScores, Score):
   RecentScores[Count].Score = Score
   RecentScores[Count].Date = CurrentTime
 
+def SaveScores(RecentScores):
+  with open("save_scores.txt",mode ="w",encoding="utf-8") as score_file:
+    for Count in range(1, NO_OF_RECENT_SCORES+1):
+      print("Saving score {0}...".format(str(Count)))
+      
+      score = str(RecentScores[Count].Score)
+      
+      score_file.write(RecentScores[Count].Name+("\n"))
+      score_file.write(score+("\n"))
+      score_file.write(RecentScores[Count].Date+("\n"))
+      
+  print("Save Complete!")
 
 
 def PlayGame(Deck, RecentScores):
@@ -311,4 +324,6 @@ if __name__ == '__main__':
     elif Choice == '4':
       ResetRecentScores(RecentScores)
     elif Choice == '5':
+      SaveScores(RecentScores)
+    elif Choice == '6':
       SetOptions()
