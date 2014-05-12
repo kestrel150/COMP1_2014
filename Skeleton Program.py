@@ -8,7 +8,7 @@
 import random
 import datetime
 
-NO_OF_RECENT_SCORES = 3
+NO_OF_RECENT_SCORES = 10
 ACE_HIGH = False
 
 class TCard():
@@ -305,11 +305,22 @@ def BubbleSortScores(RecentScores):
 def LoadScores():
   RawScoresList = []
   
-  with open("save_scores",mode="r",encoding="utf-8") as score_file:
-    for Count in score_file:
-      
-      RawScoresList.append(Count.rstrip("\n"))
-      print(RawScoresList)
+  with open("save_scores.txt",mode="r",encoding="utf-8") as score_file:
+    for Count in range(1, NO_OF_RECENT_SCORES + 1):
+      Name = score_file.readline()
+      Score = score_file.readline()
+      Date = score_file.readline()
+
+      Name = Name.rstrip("\n")
+      Score = Score.rstrip("\n")
+      Date = Date.rstrip("\n")
+
+      Score = int(Score)
+
+      RecentScores[Count].Name = Name
+      RecentScores[Count].Score = Score
+      RecentScores[Count].Date = Date
+
 
 
     
@@ -319,6 +330,12 @@ if __name__ == '__main__':
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     RecentScores.append(TRecentScore())
   Choice = ''
+  try:
+    LoadScores()
+  except IOError:
+    print("Save file not found, a blank save file shall be created.")
+    print()
+    SaveScores(RecentScores)
   while Choice != 'q':
     DisplayMenu()
     Choice = GetMenuChoice()
