@@ -9,6 +9,7 @@ import random
 import datetime
 
 NO_OF_RECENT_SCORES = 10
+
 ACE_HIGH = False
 
 class TCard():
