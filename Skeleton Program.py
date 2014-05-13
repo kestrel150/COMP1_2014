@@ -9,13 +9,15 @@ import random
 import datetime
 
 NO_OF_RECENT_SCORES = 10
-
 ACE_HIGH = False
+SAME_FAIL = True
+
 
 class TCard():
   def __init__(self):
     self.Suit = 0
     self.Rank = 0
+
 
 class TRecentScore():
   def __init__(self):
@@ -26,6 +28,7 @@ class TRecentScore():
 Deck = [None]
 RecentScores = [None]
 Choice = ''
+
 
 def GetRank(RankNo):
   Rank = ''
@@ -59,6 +62,7 @@ def GetRank(RankNo):
     Rank = "Ace"
   return Rank
 
+
 def GetSuit(SuitNo):
   Suit = ''
   if SuitNo == 1:
@@ -70,6 +74,7 @@ def GetSuit(SuitNo):
   elif SuitNo == 4:
     Suit = 'Spades'
   return Suit
+
 
 def DisplayMenu():
   print()
@@ -84,18 +89,22 @@ def DisplayMenu():
   print()
   print('Select an option from the menu (or enter q to quit): ', end='')
 
+
 def GetMenuChoice():
   Choice = input()
   Choice = Choice[0].lower()
   print()
   return Choice
 
+
 def DisplayOptions():
   print()
   print("OPTION MENU")
   print()
   print("1. Set Ace to be High or Low: ")
+  print("2. Set same card to end game or not: ")
   print()
+
   
 def GetOptionChoice():
   OptionChoice = input("Select an option from the menu (or enter q to quit to the main menu): ")
@@ -108,9 +117,12 @@ def SetOptions():
   OptionChoice = GetOptionChoice()
   if OptionChoice == '1':
     SetAceHighOrLow()
+  if OptionChoice == '2':
+    SetSameScore()
   if OptionChoice == 'q':
     print("Returning to the menu...")
     print()
+
 
 def SetAceHighOrLow():
   global ACE_HIGH
@@ -119,8 +131,17 @@ def SetAceHighOrLow():
     ACE_HIGH = True
   elif AceOption == "l":
     ACE_HIGH = False
-  
 
+
+def SetSameScore():
+  global SAME_FAIL
+  SameOption = input("Do you want the game to end when the next card is the same as the previous one? (y|n) ")
+  if SameOption == "y":
+    SAME_FAIL = True
+  elif SameOption == "n":
+    SAME_FAIL = False
+    
+  
 def LoadDeck(Deck):
   CurrentFile = open('deck.txt', 'r')
   Count = 1
@@ -135,6 +156,7 @@ def LoadDeck(Deck):
     if Deck[Count].Rank == 1 and ACE_HIGH == True:
       Deck[Count].Rank = 14
     Count = Count + 1
+
  
 def ShuffleDeck(Deck):
   SwapSpace = TCard()
@@ -149,10 +171,12 @@ def ShuffleDeck(Deck):
     Deck[Position2].Rank = SwapSpace.Rank
     Deck[Position2].Suit = SwapSpace.Suit
 
+
 def DisplayCard(ThisCard):
   print()
   print('Card is the', GetRank(ThisCard.Rank), 'of', GetSuit(ThisCard.Suit))
   print()
+
 
 def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
   ThisCard.Rank = Deck[1].Rank
@@ -163,11 +187,14 @@ def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
   Deck[52 - NoOfCardsTurnedOver].Suit = 0
   Deck[52 - NoOfCardsTurnedOver].Rank = 0
 
+
 def IsNextCardHigher(LastCard, NextCard):
   Higher = False
   if NextCard.Rank > LastCard.Rank:
     Higher = True
+
   return Higher
+
 
 def GetPlayerName():
   print()
@@ -183,10 +210,12 @@ def GetPlayerName():
 
   return PlayerName
 
+
 def GetChoiceFromUser():
   Choice = input('Do you think the next card will be higher than the last card (enter y or n)? ')
   Choice = Choice[0].lower()
   return Choice
+
 
 def DisplayEndOfGameMessage(Score):
   print()
@@ -196,17 +225,20 @@ def DisplayEndOfGameMessage(Score):
     print('WOW! You completed a perfect game.')
   print()
 
+
 def DisplayCorrectGuessMessage(Score):
   print()
   print('Well done! You guessed correctly.')
   print('Your score is now ', Score, '.', sep='')
   print()
 
+
 def ResetRecentScores(RecentScores):
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     RecentScores[Count].Name = ''
     RecentScores[Count].Score = 0
     RecentScores[Count].Date = ""
+
 
 def DisplayRecentScores(RecentScores):
   BubbleSortScores(RecentScores)
@@ -221,6 +253,7 @@ def DisplayRecentScores(RecentScores):
   print('Press the Enter key to return to the main menu')
   input()
   print()
+
 
 def UpdateRecentScores(RecentScores, Score):
   PlayerName = GetPlayerName()
@@ -243,6 +276,7 @@ def UpdateRecentScores(RecentScores, Score):
   RecentScores[Count].Score = Score
   RecentScores[Count].Date = CurrentTime
 
+
 def SaveScores(RecentScores):
   with open("save_scores.txt",mode ="w",encoding="utf-8") as score_file:
     for Count in range(1, NO_OF_RECENT_SCORES+1):
@@ -258,6 +292,7 @@ def SaveScores(RecentScores):
 
 
 def PlayGame(Deck, RecentScores):
+  SameCard = 0
   LastCard = TCard()
   NextCard = TCard()
   GameOver = False
@@ -273,13 +308,17 @@ def PlayGame(Deck, RecentScores):
     NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
     Higher = IsNextCardHigher(LastCard, NextCard)
     if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
-      DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
+      DisplayCorrectGuessMessage(NoOfCardsTurnedOver - (1 + SameCard))
       LastCard.Rank = NextCard.Rank
       LastCard.Suit = NextCard.Suit
+    elif (not Higher and SAME_FAIL == False):
+      print("The next card is the same rank. You do not fail but gain no extra point.")
+      print()
+      SameCard = SameCard + 1
     else:
       GameOver = True
   if GameOver:
-    DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2)
+    DisplayEndOfGameMessage(NoOfCardsTurnedOver - (2 + SameCard))
     ValidHighScoreChoice = False
     while ValidHighScoreChoice == False:
       Addscore = input("Do you want to add your score to the high score table? (Y or N): ")
@@ -287,10 +326,11 @@ def PlayGame(Deck, RecentScores):
       if Addscore == "Y" or Addscore == "N":
         ValidHighScoreChoice = True
     if Addscore == "Y":
-      UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2)
+      UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - (2 + SameCard))
   else:
-    DisplayEndOfGameMessage(51)
-    UpdateRecentScores(RecentScores, 51)
+    DisplayEndOfGameMessage(51 - SameCard)
+    UpdateRecentScores(RecentScores, 51 - SameCard)
+
 
 def BubbleSortScores(RecentScores):
   sort = False
@@ -302,6 +342,7 @@ def BubbleSortScores(RecentScores):
         temp = RecentScores[Count + 1]
         RecentScores[Count+1] = RecentScores[Count]
         RecentScores[Count] = temp
+
 
 def LoadScores():
   RawScoresList = []
@@ -321,8 +362,6 @@ def LoadScores():
       RecentScores[Count].Name = Name
       RecentScores[Count].Score = Score
       RecentScores[Count].Date = Date
-
-
 
     
 if __name__ == '__main__':
