@@ -302,22 +302,26 @@ def PlayGame(Deck, RecentScores):
   while (NoOfCardsTurnedOver < 52) and (not GameOver):
     GetCard(NextCard, Deck, NoOfCardsTurnedOver)
     Choice = ''
-    while (Choice != 'y') and (Choice != 'n'):
+    while (Choice != 'y') and (Choice != 'n') and (Choice != 's'):
       Choice = GetChoiceFromUser()
-    DisplayCard(NextCard)
-    NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
-    Higher = IsNextCardHigher(LastCard, NextCard)
-    if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
-      DisplayCorrectGuessMessage(NoOfCardsTurnedOver - (1 + SameCard))
-      LastCard.Rank = NextCard.Rank
-      LastCard.Suit = NextCard.Suit
-    elif (not Higher and SAME_FAIL == False):
-      print("The next card is the same rank. You do not fail but gain no extra point.")
-      print()
-      SameCard = SameCard + 1
-    else:
+    if Choice in ["y","n"]:
+      DisplayCard(NextCard)
+      NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
+      Higher = IsNextCardHigher(LastCard, NextCard)
+      if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
+        DisplayCorrectGuessMessage(NoOfCardsTurnedOver - (1 + SameCard))
+        LastCard.Rank = NextCard.Rank
+        LastCard.Suit = NextCard.Suit
+      elif (not Higher and SAME_FAIL == False):
+        print("The next card is the same rank. You do not fail but gain no extra point.")
+        print()
+        SameCard = SameCard + 1
+      else:
+        GameOver = True
+    elif Choice == 's':
+      SaveGame(NextCard,LastCard,Deck,NoOfCardsTurnedOver,Score)
       GameOver = True
-  if GameOver:
+  if GameOver and Choice != 's':
     DisplayEndOfGameMessage(NoOfCardsTurnedOver - (2 + SameCard))
     ValidHighScoreChoice = False
     while ValidHighScoreChoice == False:
@@ -327,9 +331,11 @@ def PlayGame(Deck, RecentScores):
         ValidHighScoreChoice = True
     if Addscore == "Y":
       UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - (2 + SameCard))
-  else:
+  elif Choice != 's':
     DisplayEndOfGameMessage(51 - SameCard)
     UpdateRecentScores(RecentScores, 51 - SameCard)
+  else:
+    print("Game has been saved, you may return to the game later.")
 
 
 def BubbleSortScores(RecentScores):
