@@ -291,8 +291,13 @@ def SaveScores(RecentScores):
   print("Save Complete!")
 
 
+def SaveGame(NextCard,LastCard,Deck,NoOfCardsTurnedOver,Score):
+  with open("SavedGame.dat", mode="wb") as SavedGame:
+    
+
+
 def PlayGame(Deck, RecentScores):
-  SameCard = 0
+  Score = 0
   LastCard = TCard()
   NextCard = TCard()
   GameOver = False
@@ -309,20 +314,20 @@ def PlayGame(Deck, RecentScores):
       NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
       Higher = IsNextCardHigher(LastCard, NextCard)
       if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
-        DisplayCorrectGuessMessage(NoOfCardsTurnedOver - (1 + SameCard))
+        Score = Score + 1
+        DisplayCorrectGuessMessage(Score)
         LastCard.Rank = NextCard.Rank
         LastCard.Suit = NextCard.Suit
       elif (not Higher and SAME_FAIL == False):
         print("The next card is the same rank. You do not fail but gain no extra point.")
         print()
-        SameCard = SameCard + 1
       else:
         GameOver = True
     elif Choice == 's':
       SaveGame(NextCard,LastCard,Deck,NoOfCardsTurnedOver,Score)
       GameOver = True
   if GameOver and Choice != 's':
-    DisplayEndOfGameMessage(NoOfCardsTurnedOver - (2 + SameCard))
+    DisplayEndOfGameMessage(Score)
     ValidHighScoreChoice = False
     while ValidHighScoreChoice == False:
       Addscore = input("Do you want to add your score to the high score table? (Y or N): ")
@@ -330,12 +335,13 @@ def PlayGame(Deck, RecentScores):
       if Addscore == "Y" or Addscore == "N":
         ValidHighScoreChoice = True
     if Addscore == "Y":
-      UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - (2 + SameCard))
+      UpdateRecentScores(RecentScores, Score)
   elif Choice != 's':
-    DisplayEndOfGameMessage(51 - SameCard)
-    UpdateRecentScores(RecentScores, 51 - SameCard)
+    DisplayEndOfGameMessage(Score)
+    UpdateRecentScores(RecentScores, Score)
   else:
     print("Game has been saved, you may return to the game later.")
+    print()
 
 
 def BubbleSortScores(RecentScores):
