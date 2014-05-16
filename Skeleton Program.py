@@ -7,6 +7,7 @@
 
 import random
 import datetime
+import pickle
 
 NO_OF_RECENT_SCORES = 10
 ACE_HIGH = False
@@ -293,8 +294,13 @@ def SaveScores(RecentScores):
 
 def SaveGame(NextCard,LastCard,Deck,NoOfCardsTurnedOver,Score):
   with open("SavedGame.dat", mode="wb") as SavedGame:
-    
-
+    GameAttributes = [NextCard,LastCard,Deck,NoOfCardsTurnedOver,Score]
+    pickle.dump(GameAttributes,SavedGame)
+  with open("deck.txt",mode="w",encoding="utf-8")as SavedDeck:
+    for count in Deck:
+      if count != None:
+        SavedDeck.write(str(count.Suit)+"\n")
+        SavedDeck.write(str(count.Rank)+"\n")
 
 def PlayGame(Deck, RecentScores):
   Score = 0
@@ -318,7 +324,7 @@ def PlayGame(Deck, RecentScores):
         DisplayCorrectGuessMessage(Score)
         LastCard.Rank = NextCard.Rank
         LastCard.Suit = NextCard.Suit
-      elif (not Higher and SAME_FAIL == False):
+      elif (not Higher and SAME_FAIL == False) and (LastCard.Rank == NextCard.Rank):
         print("The next card is the same rank. You do not fail but gain no extra point.")
         print()
       else:
@@ -375,6 +381,7 @@ def LoadScores():
       RecentScores[Count].Score = Score
       RecentScores[Count].Date = Date
 
+def LoadSaveGame
     
 if __name__ == '__main__':
   for Count in range(1, 53):
